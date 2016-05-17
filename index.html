@@ -14,13 +14,13 @@
       return a
     }
     load().then(function(count){
-        console.log(this.name + count)
+        document.write(this.name + count)
         a = 1/0
         //throw new Error('asdas')
         return count * 100
-        load(count * 100)
+        //load(count * 100)
     }).then(function(count){
-        console.log(this.name + count)
+        document.write(this.name + count)
     }, function(){
         console.log(arguments)
     })
