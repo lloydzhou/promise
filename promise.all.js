@@ -30,8 +30,8 @@
         })
         return context;
     };
-    promise.http = function(url){
-        var p, ajax = function(method, uri, args, playload){
+    promise.http = function(url, method, data){
+        var core, p, ajax = function(method, uri, args, playload){
             return p = promise.promise(function(){
                 var client = new XMLHttpRequest(), a = '?', b = '&', e = encodeURIComponent;
                 if (args) {
@@ -62,12 +62,13 @@
                 return client;
             })
         }
-        return {
+        core = {
             get: function(args){return ajax('GET', url, args)},
             post: function(args){return ajax('POST', url, args)},
             put: function(args){return ajax('PUT', url, args)},
             'delete': function(args){return ajax('DELETE', url, args)}
         }
+        return method ? core[method.toLowerCase()](data) : core
     }
 })(window.promise = window.promise || {})
 
