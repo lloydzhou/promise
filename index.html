@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+<title>Example </title>
+</head>
+<body>
+<script src="promise.js"></script>
+<script>
+    var a = new promise.promise({name: 'lloyd'})
+    var load = function(count){
+      setTimeout(function(){
+          a.resolve(count || 100)
+      }, 100)
+      return a
+    }
+    load().then(function(count){
+        console.log(this.name + count)
+        a = 1/0
+        //throw new Error('asdas')
+        return count * 100
+        load(count * 100)
+    }).then(function(count){
+        console.log(this.name + count)
+    }, function(){
+        console.log(arguments)
+    })
+</script>
+</body>
+</html>
+
