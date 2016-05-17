@@ -1,6 +1,6 @@
 {
   "name": "promise-http-ajax",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A library to work easily with Promise pattern, and simple ajax library",
   "main": "promise.all.js",
   "author": {
