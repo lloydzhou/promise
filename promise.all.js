@@ -14,9 +14,8 @@
         };
         if (typeof context == "function")
             context = context();
-        context = typeof context == "object" ? context : {};
-        [resolve, reject, 'then'].forEach(function(n, i){
-            Object.defineProperty(context, n, {
+        return [resolve, reject, 'then'].reduce(function(o, n, i){
+            return Object.defineProperty(o, n, {
                 value: i == 2 ? function(onFulfilled, onRejected) {
                     callbacks.push({resolve : onFulfilled, reject: onRejected});
                     return this;
@@ -27,8 +26,7 @@
                 writable: false,
                 configurable: false
             })
-        })
-        return context;
+        }, typeof context == "object" ? context : {})
     };
     promise.http = function(url, method, data){
         var core, p, Promise = promise.promise, lower = String.prototype.toLowerCase,
