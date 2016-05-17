@@ -4,7 +4,7 @@
 <title>Example </title>
 </head>
 <body>
-<script src="promise.js"></script>
+<script src="promise.all.min.js"></script>
 <script>
     var a = new promise.promise({name: 'lloyd'})
     var load = function(count){
@@ -30,48 +30,7 @@
     }).then(function(count){
         console.log(count)
     })
-    function http(url, p){
-        var ajax = function(method, uri, args, playload){
-            return p = promise.promise(function(){
-                var client = new XMLHttpRequest(), a = '?', b = '&';
-                if (args) {
-                    //uri += uri.indexOf(a) > -1 ? a : b;
-                    for (var key in args) {
-                        if (args.hasOwnProperty(key)) {
-                            playload += b + encodeURIComponent(key) + '=' + encodeURIComponent(args[key]);
-                        }
-                    }
-                }
-                if(!(method === 'POST' || method === 'PUT')){
-                    uri += uri.indexOf(a) > -1 ? b : a + (playload || '')
-                    playload = null
-                }
-                client.onload = function () {
-                  if (this.status >= 200 && this.status < 300) {
-                    // Performs the function "resolve" when this.status is equal to 2xx
-                    p.resolve(this.response);
-                  } else {
-                    // Performs the function "reject" when this.status is different than 2xx
-                    p.reject(this.statusText);
-                  }
-                };
-                client.onerror = function () {
-                  p.reject(this.statusText);
-                };
-                client.open(method, uri);
-                //client.withCredentials = true;
-                client.send(playload);
-                return client;
-            })
-        }
-        return {
-            get: function(args){return ajax('GET', url, args)},
-            post: function(args){return ajax('POST', url, args)},
-            put: function(args){return ajax('PUT', url, args)},
-            delete: function(args){return ajax('DELETE', url, args)},
-        }
-    }
-    http('https://query.yahooapis.com/v1/public/yql')
+    promise.http('https://query.yahooapis.com/v1/public/yql')
     .get({
         'q': 'select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="wuhan,cn")',
         'format': 'json'
