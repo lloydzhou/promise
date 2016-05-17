@@ -1,19 +1,24 @@
 ;(function(promise){
     promise.promise = function(context) {
-        var callbacks = [], execute = function(type, context, args) {
+        var callbacks = [], resolve = 'resolve', reject = 'reject',
+        execute = function(type, context, args) {
             try{
-                if (callbacks.length && (args = callbacks.shift()[type].apply(context, args)))
-                    execute('resolve', context, [args])
+                if (callbacks.length
+                  && typeof (cb = callbacks.shift()[type]) == "function"
+                  && (args = cb.apply(context, args)))
+                    execute(resolve, context, [args])
             }catch(e){
                 [].unshift.call(args, e)
-                execute('reject', context, args)
+                execute(reject, context, args)
             }
         };
-        context = context || {};
-        ['resolve', 'reject', 'then'].forEach(function(n, i){
+        if (typeof context == "function")
+            context = context();
+        context = typeof context == "object" ? context : {};
+        [resolve, reject, 'then'].forEach(function(n, i){
             Object.defineProperty(context, n, {
                 value: i == 2 ? function(onFulfilled, onRejected) {
-                    callbacks.push({'resolve' : onFulfilled, 'reject': onRejected});
+                    callbacks.push({resolve : onFulfilled, reject: onRejected});
                     return this;
                 } : function() {
                     execute(n, this, arguments);
