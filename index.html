@@ -23,9 +23,10 @@
     }, function(){
         console.log(arguments)
     })
-    var b = promise.promise(function(){
+    var b = promise.promise(function(resolver, rejector){
         setTimeout(function(){
-            b.resolve(100)
+            resolver(100)
+            //b.resolve(100)
         }, 100)
     }).then(function(count){
         console.log(count)

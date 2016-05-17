@@ -8,20 +8,23 @@
                   && (args = cb.apply(context, args)))
                     execute(resolve, context, [args])
             }catch(e){
-                [].unshift.call(args, e)
-                execute(reject, context, args)
+                execute(reject, context, [e])
             }
-        };
+        }, properties = [
+            function(){
+                execute(resolve, context, arguments);
+            }, function(){
+                execute(reject, context, arguments);
+            }, function(onFulfilled, onRejected){
+                callbacks.push({resolve : onFulfilled, reject: onRejected});
+                return context;
+            }
+        ];
         if (typeof context == "function")
-            context = context();
+            context = context.apply(context, properties);
         return [resolve, reject, 'then'].reduce(function(o, n, i){
             return Object.defineProperty(o, n, {
-                value: i == 2 ? function(onFulfilled, onRejected) {
-                    callbacks.push({resolve : onFulfilled, reject: onRejected});
-                    return this;
-                } : function() {
-                    execute(n, this, arguments);
-                },
+                value: properties[i],
                 enumerable: false,
                 writable: false,
                 configurable: false
