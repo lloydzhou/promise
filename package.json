@@ -1,0 +1,19 @@
+{
+  "name": "promise-http-ajax",
+  "version": "0.0.1",
+  "description": "A library to work easily with Promise pattern, and simple ajax library",
+  "main": "promise.all.js",
+  "author": {
+    "name": "lloydzhou",
+    "email": "lloydzhou@qq.com"
+  },
+  "keywords": [
+    "Promise",
+	  "Ajax"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lloydzhou/promise"
+  },
+  "readmeFilename": "README"
+}
