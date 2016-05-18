@@ -1,15 +1,11 @@
 ;(function(promise){
     promise.promise = function(context) {
-        var callbacks = [], resolve = 'resolve', reject = 'reject',
+        var callbacks = [], resolve = 'resolve', reject = 'reject', fun = "function",
         execute = function(type, context, args) {
-            try{
-                if (callbacks.length
-                  && typeof (cb = callbacks.shift()[type]) == "function"
-                  && (args = cb.apply(context, args)))
-                    execute(resolve, context, [args])
-            }catch(e){
-                execute(reject, context, [e])
-            }
+            if (callbacks.length
+              && typeof (cb = callbacks.shift()[type]) == fun
+              && (args = cb.apply(context, args)))
+                execute(resolve, context, [args])
         }, properties = [
             function(){
                 execute(resolve, context, arguments);
@@ -20,7 +16,7 @@
                 return context;
             }
         ];
-        if (typeof context == "function")
+        if (typeof context == fun)
             context = context.apply(context, properties);
         return [resolve, reject, 'then'].reduce(function(o, n, i){
             return Object.defineProperty(o, n, {
@@ -29,7 +25,7 @@
                 writable: false,
                 configurable: false
             })
-        }, typeof context == "object" ? context : {})
+        }, context = typeof context == "object" ? context : {v: context})
     };
 })(window.promise = window.promise || {})
 

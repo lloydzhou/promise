@@ -1,6 +1,6 @@
 ;(function(promise){
     promise.http = function(url, method, data){
-        var core, Promise = promise.promise, lower = String.prototype.toLowerCase,
+        var Promise = promise.promise,
           ajax = function(method, uri, args){
             return new Promise(function(resolver, reject){
                 var client = new XMLHttpRequest(), a = '?', b = '&', e = encodeURIComponent, playload = '';
@@ -31,15 +31,12 @@
                 client.send(playload);
                 return client;
             })
-        }
+        },
         core = new Promise(['HEAD', 'GET', 'POST', 'PUT', 'DELETE'].reduce(function(o, v){
-            o[lower.call(v)] = function(args){ return ajax(v, url, args) }
+            o[v.toLowerCase()] = function(args){ return ajax(v, url, args) }
             return o
-            //return Object.defineProperty(o, lower.call(v), {
-            //    value: function(args){ return ajax(v, url, args) },
-            //})
         }, {}))
-        return method ? core[lower.call(method)](data) : core
+        return method ? core[method.toLowerCase()](data) : core
     }
 })(window.promise = window.promise || {})
 

@@ -30,6 +30,10 @@
         }, 100)
     }).then(function(count){
         console.log(count)
+        return count * 1000
+    }).then(function(count){
+        console.log(count)
+        return count * 1000
     })
     promise.http('https://query.yahooapis.com/v1/public/yql')
     .get({

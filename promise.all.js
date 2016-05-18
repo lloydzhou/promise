@@ -1,15 +1,11 @@
 ;(function(promise){
     promise.promise = function(context) {
-        var callbacks = [], resolve = 'resolve', reject = 'reject',
+        var callbacks = [], resolve = 'resolve', reject = 'reject', fun = "function",
         execute = function(type, context, args) {
-            try{
-                if (callbacks.length
-                  && typeof (cb = callbacks.shift()[type]) == "function"
-                  && (args = cb.apply(context, args)))
-                    execute(resolve, context, [args])
-            }catch(e){
-                execute(reject, context, [e])
-            }
+            if (callbacks.length
+              && typeof (cb = callbacks.shift()[type]) == fun
+              && (args = cb.apply(context, args)))
+                execute(resolve, context, [args])
         }, properties = [
             function(){
                 execute(resolve, context, arguments);
@@ -20,7 +16,7 @@
                 return context;
             }
         ];
-        if (typeof context == "function")
+        if (typeof context == fun)
             context = context.apply(context, properties);
         return [resolve, reject, 'then'].reduce(function(o, n, i){
             return Object.defineProperty(o, n, {
@@ -29,10 +25,10 @@
                 writable: false,
                 configurable: false
             })
-        }, typeof context == "object" ? context : {})
+        }, context = typeof context == "object" ? context : {v: context})
     };
     promise.http = function(url, method, data){
-        var core, Promise = promise.promise, lower = String.prototype.toLowerCase,
+        var Promise = promise.promise,
           ajax = function(method, uri, args){
             return new Promise(function(resolver, reject){
                 var client = new XMLHttpRequest(), a = '?', b = '&', e = encodeURIComponent, playload = '';
@@ -63,15 +59,12 @@
                 client.send(playload);
                 return client;
             })
-        }
+        },
         core = new Promise(['HEAD', 'GET', 'POST', 'PUT', 'DELETE'].reduce(function(o, v){
-            o[lower.call(v)] = function(args){ return ajax(v, url, args) }
+            o[v.toLowerCase()] = function(args){ return ajax(v, url, args) }
             return o
-            //return Object.defineProperty(o, lower.call(v), {
-            //    value: function(args){ return ajax(v, url, args) },
-            //})
         }, {}))
-        return method ? core[lower.call(method)](data) : core
+        return method ? core[method.toLowerCase()](data) : core
     }
 })(window.promise = window.promise || {})
 
