@@ -16,8 +16,8 @@
                 return context;
             }
         ];
-        if (typeof context == fun)
-            context = context.apply(context, properties);
+        if (typeof (context = context || {}) == fun)
+            context.__v = context.apply(context, properties);
         return [resolve, reject, 'then'].reduce(function(o, n, i){
             return Object.defineProperty(o, n, {
                 value: properties[i],
@@ -25,7 +25,7 @@
                 writable: false,
                 configurable: false
             })
-        }, context = typeof context == "object" ? context : {v: context})
+        }, context)
     };
     promise.http = function(url, method, data){
         var Promise = promise.promise,
